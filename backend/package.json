@@ -1,0 +1,15 @@
+{
+  "name": "quizapplication",
+  "version": "1.0.0",
+  "description": "- admin should be allowed to add questions \r - admin should be allowed to move to the next questions \r - admin should be allowed to show the leaderboad to everyone \r - users should be allowed to answer the questions\r - users just need to poll the server for the next question , no need for it to be real time",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  }
+}
