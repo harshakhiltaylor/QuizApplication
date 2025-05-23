@@ -1,25 +1,12 @@
-
-import http from 'http';
-import {Server} from "socket.io"
 import { IoManager } from './managers/IoManager';
+import { UserManager } from './managers/UserManagers'
 
-const server = http.createServer();
 
 const io = IoManager.getIo();
 
-
-
-
-io.on('connection', client => {
-  
-    client.on('event', data => {
-
-  });
-
-  client.on('disconnect', () => {
-
-  });
-
+io.listen(3000);
+const userManager = new UserManager();
+io.on('connection', (socket) => {
+  userManager.addUser(socket);
 });
-
-server.listen(3000);
+  
