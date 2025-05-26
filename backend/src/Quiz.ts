@@ -2,7 +2,7 @@
 import { IoManager } from "./managers/IoManager";
 
 export type AllowedSubmissions = 0 | 1 | 2 | 3;
-const PROBLEM_TIME_S = 20;
+const PROBLEM_TIME_S = 5;
 
 interface User {
     name: string;
@@ -72,7 +72,7 @@ export class Quiz {
         this.currentState = "question"
         problem.startTime = new Date().getTime();
         problem.submissions = [];
-        IoManager.getIo().emit("CHANGE_PROBLEM", {
+        IoManager.getIo().to(this.roomId).emit("problem", {
             problem
         })
         // Todo: clear this if function moves ahead
@@ -94,6 +94,7 @@ export class Quiz {
         if (problem) {
             this.setActiveProblem(problem);
         } else {
+            this.activeProblem--;
             // send final results here
             // IoManager.getIo().emit("QUIZ_END", {
             //     problem
@@ -119,15 +120,19 @@ export class Quiz {
         return id;
     }
     submit(userId: string, roomId: string, problemId: string, submission: AllowedSubmissions) {
+        console.log("userId");
+        console.log(userId);
         const problem = this.problems.find(x => x.id == problemId);
         const user = this.users.find(x => x.id === userId);
  
         if (!problem || !user) {
+            console.log("problem or user not found")
             return;
         }
         const existingSubmission = problem.submissions.find(x => x.userId === userId);
  
         if (existingSubmission) {
+            console.log("existn submissions")
             return;
         }
  
@@ -137,11 +142,11 @@ export class Quiz {
             isCorrect: problem.answer === submission,
             optionSelected: submission
         });
-        user.points += 1000 - 500 * (new Date().getTime() - problem.startTime) / PROBLEM_TIME_S;
+        user.points += (1000 - (500 * (new Date().getTime() - problem.startTime) / (PROBLEM_TIME_S * 1000)));
     }
 
     getLeaderboard() {
-        return this.users.sort((a, b) => a.points < b.points ? 1 : -1).splice(0, 20);;
+        return this.users.sort((a, b) => a.points < b.points ? 1 : -1).slice(0, 20);;
     }
 
     getCurrentState() {
